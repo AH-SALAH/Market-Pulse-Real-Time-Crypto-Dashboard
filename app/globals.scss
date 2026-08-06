@@ -1,9 +1,7 @@
 // Design tokens
 @use "./_variables.scss" as *;
 
-// Tailwind v4 entry — sass passes the plain-CSS @import through to the
-// @tailwindcss/postcss plugin, which expands it into base + utilities.
-@import "tailwindcss";
+@use "tailwindcss";
 
 // Global base styles
 :root {
