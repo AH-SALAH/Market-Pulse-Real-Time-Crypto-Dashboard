@@ -1,6 +1,6 @@
 import type { Preview } from '@storybook/nextjs-vite'
 import { NextIntlClientProvider } from 'next-intl'
-import defaultMessages from '../messages/en.json'
+import defaultMessages from '../i18n/messages/en.json'
 
 const preview: Preview = {
   parameters: {
