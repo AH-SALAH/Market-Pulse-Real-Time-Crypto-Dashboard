@@ -1,7 +1,11 @@
+import { Suspense } from 'react';
 import type { Metadata, Viewport } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { StoreProvider } from '@/store/StoreProvider';
 import { Providers } from '@/app/providers';
+import { GTMScript } from '@/components/GTMScript';
+import { ConsentBanner } from '@/components/ConsentBanner';
+import { PageViewTracker } from '@/components/PageViewTracker';
 import './globals.scss';
 
 const geistSans = Geist({
@@ -27,9 +31,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-slate-950 text-slate-50">
+        <GTMScript />
         <StoreProvider>
-          <Providers>{children}</Providers>
+          <Providers>
+            <Suspense>
+              <PageViewTracker />
+            </Suspense>
+            {children}
+          </Providers>
         </StoreProvider>
+        <ConsentBanner />
       </body>
     </html>
   );

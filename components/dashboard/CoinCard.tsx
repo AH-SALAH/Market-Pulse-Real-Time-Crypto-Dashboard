@@ -1,4 +1,8 @@
+'use client';
+
+import type { KeyboardEvent } from 'react';
 import type { Coin } from '@/lib/coingecko';
+import { coin_selected } from '@/lib/analytics/events';
 import { PriceChangeBadge } from './PriceChangeBadge';
 import { Sparkline } from './Sparkline';
 
@@ -21,9 +25,28 @@ function formatPrice(price: number): string {
 export function CoinCard({ coin, rank }: CoinCardProps) {
   const change = coin.price_change_percentage_24h ?? 0;
 
+  function handleSelect() {
+    coin_selected({
+      coin_id: coin.id,
+      coin_name: coin.name,
+      coin_symbol: coin.symbol,
+    });
+  }
+
+  function handleKeyDown(event: KeyboardEvent<HTMLElement>) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handleSelect();
+    }
+  }
+
   return (
     <article
-      className="group flex flex-col gap-4 rounded-xl border border-slate-800 bg-slate-900/60 p-4 transition-colors hover:border-slate-600 hover:bg-slate-900"
+      role="button"
+      tabIndex={0}
+      onClick={handleSelect}
+      onKeyDown={handleKeyDown}
+      className="group flex flex-col gap-4 rounded-xl border border-slate-800 bg-slate-900/60 p-4 transition-colors hover:border-slate-600 hover:bg-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
     >
       <div className="flex items-center gap-3">
         {rank !== undefined && (
