@@ -42,3 +42,98 @@ next-env.d.ts
 
 # storybook build output
 /storybook-static
+
+# ==========================
+# SECRETS — never let an agent read these
+# ==========================
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+*.pfx
+*credentials*.json
+*serviceaccount*.json
+.aws/
+.gcloud/
+.ssh/
+secrets/
+
+# ==========================
+# DEPENDENCIES & BUILD ARTIFACTS
+# ==========================
+node_modules/
+dist/
+build/
+.next/
+target/
+vendor/
+*.min.js
+*.map
+package-lock.json
+yarn.lock
+.cache/
+
+# ==========================
+# TEST & COVERAGE NOISE
+# ==========================
+coverage/
+test-results/
+playwright-report/
+*.log
+logs/
+
+# ==========================
+# EDITOR / OS CLUTTER
+# ==========================
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# ==========================
+# AI-SPECIFIC (mirror into .cursorignore too)
+# ==========================
+*.tfstate
+*.dump
+*.sqlite
+fixtures/large/
+
+# ==========================
+# CUSTOM NOISE
+# ==========================
+.cursorignore
+
+# === Cursor AI & Workspace Settings ===
+.cursorrules
+.cursor/
+.cursor_history/
+
+# === Specification Kit (Strictly Private) ===
+# Ignores all specification documents, plans, and architectural designs
+*spec*.md
+*plan*.md
+*architecture*.md
+docs/specs/
+docs/plans/
+
+# === AI Artifacts & Agent Logs ===
+.ai/
+*.log.md
+agent-output/
+ai-session-*/
+prompts/temp/
+
+# === Spec Kit Architecture / Scratchpads ===
+.specify
+specs
+.*
+**/memory/*.local.md
+
+# === misc ===
+scripts
+IMPROVEMENTS*
+prompts/
+portfolio*
+tasks*
