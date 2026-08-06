@@ -1,7 +1,13 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import * as d3 from 'd3';
+import { select, pointer } from 'd3-selection';
+import { scaleUtc, scaleLinear } from 'd3-scale';
+import { min, max, bisector } from 'd3-array';
+import { axisLeft, axisBottom } from 'd3-axis';
+import { timeFormat } from 'd3-time-format';
+import { format } from 'd3-format';
+import { line, area, curveMonotoneX } from 'd3-shape';
 import { useTranslations } from 'next-intl';
 import styles from './PriceChart.module.scss';
 
@@ -31,7 +37,7 @@ export function PriceChart({ prices, days }: PriceChartProps) {
     const svgNode = svgRef.current;
     if (!svgNode || prices.length < 2) return;
 
-    const svg = d3.select(svgNode);
+    const svg = select(svgNode);
     svg.selectAll('*').remove();
 
     const g = svg
@@ -40,15 +46,14 @@ export function PriceChart({ prices, days }: PriceChartProps) {
       .append('g')
       .attr('transform', `translate(${MARGIN.left},${MARGIN.top})`);
 
-    const x = d3
-      .scaleUtc()
+    const x = scaleUtc()
       .domain([new Date(prices[0][0]), new Date(prices[prices.length - 1][0])])
       .range([0, INNER_W]);
 
-    const yMin = d3.min(prices, (d) => d[1]) ?? 0;
-    const yMax = d3.max(prices, (d) => d[1]) ?? 1;
+    const yMin = min(prices, (d) => d[1]) ?? 0;
+    const yMax = max(prices, (d) => d[1]) ?? 1;
     const pad = (yMax - yMin) * 0.08 || 1;
-    const y = d3.scaleLinear().domain([yMin - pad, yMax + pad]).range([INNER_H, 0]);
+    const y = scaleLinear().domain([yMin - pad, yMax + pad]).range([INNER_H, 0]);
 
     const trend = prices[prices.length - 1][1] - prices[0][1];
     const lineClass = trend >= 0 ? styles.lineUp : styles.lineDown;
@@ -57,7 +62,7 @@ export function PriceChart({ prices, days }: PriceChartProps) {
     // Horizontal grid lines (y-axis ticks with full-width tick marks, labels off)
     g.append('g')
       .attr('class', styles.grid)
-      .call(d3.axisLeft(y).ticks(5).tickSize(-INNER_W).tickFormat(() => ''))
+      .call(axisLeft(y).ticks(5).tickSize(-INNER_W).tickFormat(() => ''))
       .select('.domain')
       .remove();
 
@@ -65,10 +70,9 @@ export function PriceChart({ prices, days }: PriceChartProps) {
     g.append('g')
       .attr('transform', `translate(0,${INNER_H})`)
       .call(
-        d3
-          .axisBottom(x)
+        axisBottom(x)
           .ticks(6)
-          .tickFormat(d3.timeFormat(days <= 1 ? '%H:%M' : '%b %d') as never),
+          .tickFormat(timeFormat(days <= 1 ? '%H:%M' : '%b %d') as never),
       )
       .selectAll('text')
       .attr('fill', 'currentColor');
@@ -76,26 +80,23 @@ export function PriceChart({ prices, days }: PriceChartProps) {
     // Y axis — compact currency tick labels
     g.append('g')
       .call(
-        d3
-          .axisLeft(y)
+        axisLeft(y)
           .ticks(6)
-          .tickFormat((v) => d3.format('$.3s')(Number(v)) as never),
+          .tickFormat((v) => format('$.3s')(Number(v)) as never),
       )
       .selectAll('text')
       .attr('fill', 'currentColor');
 
-    const lineGen = d3
-      .line<[number, number]>()
+    const lineGen = line<[number, number]>()
       .x((d) => x(d[0]))
       .y((d) => y(d[1]))
-      .curve(d3.curveMonotoneX);
+      .curve(curveMonotoneX);
 
-    const areaGen = d3
-      .area<[number, number]>()
+    const areaGen = area<[number, number]>()
       .x((d) => x(d[0]))
       .y0(() => y(yMin - pad))
       .y1((d) => y(d[1]))
-      .curve(d3.curveMonotoneX);
+      .curve(curveMonotoneX);
 
     g.append('path').datum(prices).attr('d', areaGen).attr('class', areaClass);
     g.append('path').datum(prices).attr('d', lineGen).attr('class', lineClass);
@@ -110,10 +111,10 @@ export function PriceChart({ prices, days }: PriceChartProps) {
       .append('text')
       .attr('text-anchor', 'middle');
 
-    const bisect = d3.bisector<[number, number], number>((d) => d[0]).left;
+    const bisect = bisector<[number, number], number>((d) => d[0]).left;
 
     function onMove(event: MouseEvent) {
-      const [mx] = d3.pointer(event, g.node() as SVGGElement);
+      const [mx] = pointer(event, g.node() as SVGGElement);
       if (mx < 0 || mx > INNER_W) return;
 
       const x0 = x.invert(mx);
@@ -130,12 +131,12 @@ export function PriceChart({ prices, days }: PriceChartProps) {
       focus.select('line').attr('x1', cx).attr('x2', cx);
       focus.select('circle').attr('cx', cx).attr('cy', cy);
 
-      const priceFormat = d3.format(days <= 1 ? '$.2f' : '$.3s');
-      const timeFormat = d3.timeFormat(days <= 1 ? '%H:%M' : '%b %d');
+      const priceFormat = format(days <= 1 ? '$.2f' : '$.3s');
+      const timeFormatFn = timeFormat(days <= 1 ? '%H:%M' : '%b %d');
       const tx = Math.max(44, Math.min(INNER_W - 44, cx));
       focusText
         .attr('transform', `translate(${tx},${cy - 14})`)
-        .text(`${priceFormat(point[1])} · ${timeFormat(new Date(point[0]))}`);
+        .text(`${priceFormat(point[1])} · ${timeFormatFn(new Date(point[0]))}`);
     }
 
     g.append('rect')

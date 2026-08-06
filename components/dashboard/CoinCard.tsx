@@ -1,6 +1,7 @@
 'use client';
 
 import { Link } from '@/i18n/navigation';
+import Image from 'next/image';
 import type { KeyboardEvent } from 'react';
 import type { Coin } from '@/lib/coingecko';
 import { coin_selected } from '@/lib/analytics/events';
@@ -46,18 +47,16 @@ export function CoinCard({ coin, rank }: CoinCardProps) {
             {rank}
           </span>
         )}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           src={coin.image}
           alt=""
           width={28}
           height={28}
           className="h-7 w-7 shrink-0 rounded-full"
-          loading="lazy"
         />
         <div className="min-w-0">
-          <h3 className="truncate text-sm font-semibold text-slate-100">{coin.name}</h3>
-          <p className="font-mono text-xs uppercase tracking-wide text-slate-500">{coin.symbol}</p>
+          <h2 className="truncate text-sm font-semibold text-slate-100">{coin.name}</h2>
+          <p className="font-mono text-xs uppercase tracking-wide text-slate-400">{coin.symbol}</p>
         </div>
         <div className="ms-auto flex items-center gap-2">
           <WatchlistButton coinId={coin.id} coinName={coin.name} />

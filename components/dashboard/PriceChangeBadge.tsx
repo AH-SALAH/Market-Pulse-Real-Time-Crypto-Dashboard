@@ -1,4 +1,7 @@
 import { useTranslations } from 'next-intl';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import RemoveIcon from '@mui/icons-material/Remove';
 import { cn } from '@/lib/cn';
 
 interface PriceChangeBadgeProps {
@@ -28,7 +31,15 @@ export function PriceChangeBadge({ value, className }: PriceChangeBadgeProps) {
       )}
       aria-label={t('aria', { change: formatChange(value) })}
     >
-      <span aria-hidden="true">{isPositive ? '▲' : isNegative ? '▼' : '•'}</span>
+      <span aria-hidden="true" className="inline-flex">
+        {isPositive ? (
+          <ArrowUpwardIcon sx={{ fontSize: 12 }} />
+        ) : isNegative ? (
+          <ArrowDownwardIcon sx={{ fontSize: 12 }} />
+        ) : (
+          <RemoveIcon sx={{ fontSize: 12 }} />
+        )}
+      </span>
       {formatChange(value)}
     </span>
   );

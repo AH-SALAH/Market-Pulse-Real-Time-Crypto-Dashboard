@@ -78,7 +78,7 @@ export function CoinList() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
+      <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400">
         <span className="inline-flex items-center gap-1.5">
           <span
             className={cn('h-1.5 w-1.5 rounded-full', isRefetching ? 'bg-emerald-400' : 'bg-emerald-500/50')}

@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslations } from 'next-intl';
+import CloseIcon from '@mui/icons-material/Close';
 import type { AppDispatch, RootState } from '@/store';
 import { setSearchQuery, setSortBy, type SortBy } from '@/store/slices/filtersSlice';
 import { filter_applied, search_performed } from '@/lib/analytics/events';
@@ -88,7 +89,7 @@ export function FilterBar() {
             aria-label={t('clearSearch')}
             className="absolute end-1.5 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded text-slate-500 transition-colors hover:text-slate-200"
           >
-            <span aria-hidden="true">×</span>
+            <CloseIcon sx={{ fontSize: 16 }} aria-hidden="true" />
           </button>
         )}
       </div>

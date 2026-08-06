@@ -54,7 +54,8 @@
     "updated": "آخر تحديث {time}",
     "chartLoading": "جارٍ تحميل المخطط",
     "chartError": "تعذّر تحميل بيانات المخطط: {message}",
-    "retry": "إعادة المحاولة"
+    "retry": "إعادة المحاولة",
+    "alertLabel": "تنبيه"
   },
   "RangeSelector": {
     "aria": "نطاق المخطط",
@@ -86,6 +87,22 @@
     "removeAria": "إزالة {coin} من قائمة المتابعة",
     "addTitle": "إضافة إلى قائمة المتابعة",
     "inWatchlist": "في قائمة المتابعة"
+  },
+  "PriceAlert": {
+    "aria": "تعيين تنبيه سعر لعملة {coin}",
+    "title": "تعيين تنبيه سعر",
+    "regionAria": "تنبيهات الأسعار لعملة {coin}",
+    "currentPrice": "السعر الحالي",
+    "targetPrice": "السعر المستهدف",
+    "targetPlaceholder": "مثال: {price}",
+    "note": "ملاحظة (اختياري)",
+    "notePlaceholder": "مثال: شراء عند الانخفاض",
+    "create": "تعيين التنبيه",
+    "saving": "جارٍ الحفظ…",
+    "createError": "تعذّر حفظ التنبيه",
+    "listAria": "تنبيهات الأسعار النشطة",
+    "delete": "حذف",
+    "deleteAria": "حذف التنبيه عند ${price}"
   },
   "Consent": {
     "aria": "موافقة ملفات الارتباط",

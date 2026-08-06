@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import filtersReducer, { type SortBy } from '@/store/slices/filtersSlice';
 import { watchlistQueryKey } from '@/hooks/useWatchlist';
+import { alertsQueryKey } from '@/hooks/useAlerts';
 
 // Shared decorators for the dashboard components (all rendered on the app's
 // dark slate background so the slate-* Tailwind classes read correctly).
@@ -37,6 +38,7 @@ export function QueryClientDecorator(Story: () => ReactNode) {
       },
     });
     queryClient.setQueryData(watchlistQueryKey, []);
+    queryClient.setQueryData(alertsQueryKey, []);
     return queryClient;
   }, []);
   return (

@@ -54,7 +54,8 @@
     "updated": "Updated {time}",
     "chartLoading": "Loading chart",
     "chartError": "Failed to load chart data: {message}",
-    "retry": "Retry"
+    "retry": "Retry",
+    "alertLabel": "Alert"
   },
   "RangeSelector": {
     "aria": "Chart range",
@@ -86,6 +87,22 @@
     "removeAria": "Remove {coin} from watchlist",
     "addTitle": "Add to watchlist",
     "inWatchlist": "In watchlist"
+  },
+  "PriceAlert": {
+    "aria": "Set a price alert for {coin}",
+    "title": "Set price alert",
+    "regionAria": "Price alerts for {coin}",
+    "currentPrice": "Current price",
+    "targetPrice": "Target price",
+    "targetPlaceholder": "e.g. {price}",
+    "note": "Note (optional)",
+    "notePlaceholder": "e.g. buy the dip",
+    "create": "Set alert",
+    "saving": "Saving…",
+    "createError": "Failed to save alert",
+    "listAria": "Active price alerts",
+    "delete": "Delete",
+    "deleteAria": "Delete alert at ${price}"
   },
   "Consent": {
     "aria": "Cookie consent",

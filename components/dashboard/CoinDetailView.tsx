@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useFormatter, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { useCoinDetail } from '@/hooks/useCoinDetail';
@@ -10,6 +12,7 @@ import { PriceChart } from './PriceChart';
 import { RangeSelector } from './RangeSelector';
 import { PriceChangeBadge } from './PriceChangeBadge';
 import { WatchlistButton } from './WatchlistButton';
+import { PriceAlertButton } from './PriceAlertButton';
 
 interface CoinDetailViewProps {
   coinId: string;
@@ -33,22 +36,23 @@ export function CoinDetailView({ coinId }: CoinDetailViewProps) {
         href="/"
         className="mb-6 inline-flex items-center gap-1.5 text-sm text-slate-400 transition-colors hover:text-slate-200"
       >
-        <span aria-hidden="true" className="rtl:flip inline-block">
-          &larr;
+        <span aria-hidden="true" className="rtl:flip inline-flex">
+          <ArrowBackIcon sx={{ fontSize: 16 }} />
         </span>{' '}
         {t('back')}
       </Link>
 
       <section className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div className="flex items-center gap-3">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={coin?.image}
-            alt=""
-            width={40}
-            height={40}
-            className="h-10 w-10 rounded-full"
-          />
+          {coin?.image && (
+            <Image
+              src={coin.image}
+              alt=""
+              width={40}
+              height={40}
+              className="h-10 w-10 rounded-full"
+            />
+          )}
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-2xl font-bold tracking-tight text-slate-100">
@@ -73,6 +77,14 @@ export function CoinDetailView({ coinId }: CoinDetailViewProps) {
 
         <div className="flex items-center gap-2">
           <WatchlistButton coinId={coinId} coinName={coin?.name ?? coinId} label={t('watchlistLabel')} />
+          {coin && (
+            <PriceAlertButton
+              coinId={coinId}
+              coinName={coin.name}
+              currentPrice={coin.current_price}
+              label={t('alertLabel')}
+            />
+          )}
           <RangeSelector coinId={coinId} value={days} onChange={setDays} />
         </div>
       </section>

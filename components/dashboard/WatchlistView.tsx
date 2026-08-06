@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { useCoins } from '@/hooks/useCoins';
 import { useWatchlist } from '@/hooks/useWatchlist';
@@ -51,7 +52,7 @@ export function WatchlistView() {
           <h1 className="text-2xl font-bold tracking-tight text-slate-100">{t('title')}</h1>
           <p className="mt-1 text-sm text-slate-400">{t('subtitle')}</p>
         </div>
-        <span className="flex items-center gap-1.5 text-xs text-slate-500">
+        <span className="flex items-center gap-1.5 text-xs text-slate-400">
           <span
             className={cn(
               'h-1.5 w-1.5 rounded-full',
@@ -107,18 +108,16 @@ export function WatchlistView() {
                 }
                 className="group flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/60 px-4 py-3 transition-colors hover:border-slate-600 hover:bg-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src={coin.image}
                   alt=""
                   width={32}
                   height={32}
                   className="h-8 w-8 shrink-0 rounded-full"
-                  loading="lazy"
                 />
                 <div className="min-w-0">
-                  <h3 className="truncate text-sm font-semibold text-slate-100">{coin.name}</h3>
-                  <p className="font-mono text-xs uppercase tracking-wide text-slate-500">
+                  <h2 className="truncate text-sm font-semibold text-slate-100">{coin.name}</h2>
+                  <p className="font-mono text-xs uppercase tracking-wide text-slate-400">
                     {coin.symbol}
                   </p>
                 </div>

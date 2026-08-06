@@ -1,6 +1,8 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
 import { cn } from '@/lib/cn';
 import { useAddToWatchlist, useRemoveFromWatchlist, useWatchlist } from '@/hooks/useWatchlist';
 
@@ -10,23 +12,6 @@ interface WatchlistButtonProps {
   className?: string;
   /** Show a text label next to the icon (detail page). Icon-only by default. */
   label?: string;
-}
-
-function BookmarkIcon({ filled }: { filled: boolean }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      width="16"
-      height="16"
-      aria-hidden="true"
-      fill={filled ? 'currentColor' : 'none'}
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinejoin="round"
-    >
-      <path d="M6 3.5h12A1.5 1.5 0 0 1 19.5 5v15l-7.5-4.5-7.5 4.5V5A1.5 1.5 0 0 1 6 3.5Z" />
-    </svg>
-  );
 }
 
 export function WatchlistButton({ coinId, coinName, className, label }: WatchlistButtonProps) {
@@ -69,7 +54,11 @@ export function WatchlistButton({ coinId, coinName, className, label }: Watchlis
         className,
       )}
     >
-      <BookmarkIcon filled={watched} />
+      {watched ? (
+        <BookmarkIcon sx={{ fontSize: 16 }} aria-hidden="true" />
+      ) : (
+        <BookmarkBorderIcon sx={{ fontSize: 16 }} aria-hidden="true" />
+      )}
       {label && <span>{label}</span>}
     </button>
   );
