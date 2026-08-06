@@ -1,0 +1,27 @@
+// Design tokens
+@use "./_variables.scss" as *;
+
+// Tailwind directives (v3 style, processed by Next.js Sass loader)
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// Global base styles
+:root {
+  --color-background: #{$color-background};
+  --color-foreground: #{$color-text-primary};
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  min-height: 100vh;
+}
+
+// Utility for RTL support
+[dir="rtl"] {
+  .rtl\:flip {
+    transform: scaleX(-1);
+  }
+}
