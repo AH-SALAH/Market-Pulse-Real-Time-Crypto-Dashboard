@@ -1,0 +1,66 @@
+// Co-located SCSS for PriceChart — SVG/chart styling via Sass mixins/tokens (PLAN.md §4.2).
+// D3 appends SVG elements and assigns these class names for stroke/fill/grid styling.
+@use '../../app/_variables.scss' as *;
+
+.container {
+  width: 100%;
+}
+
+.chart {
+  display: block;
+  width: 100%;
+  height: auto;
+  color: $color-text-secondary;
+}
+
+.lineUp {
+  fill: none;
+  stroke: $color-positive;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.lineDown {
+  fill: none;
+  stroke: $color-negative;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.areaUp {
+  fill: color-mix(in srgb, $color-positive 12%, transparent);
+}
+
+.areaDown {
+  fill: color-mix(in srgb, $color-negative 12%, transparent);
+}
+
+.grid {
+  line {
+    stroke: $color-border;
+    stroke-opacity: 0.5;
+  }
+}
+
+.focus {
+  pointer-events: none;
+
+  .focusLine {
+    stroke: $color-text-secondary;
+    stroke-dasharray: 3 3;
+  }
+
+  .focusDot {
+    fill: $color-background;
+    stroke: $color-text-secondary;
+    stroke-width: 2;
+  }
+
+  .focusLabel text {
+    fill: $color-text-primary;
+    font-size: $font-size-xs;
+    font-variant-numeric: tabular-nums;
+  }
+}

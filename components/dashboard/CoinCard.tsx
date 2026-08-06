@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import type { KeyboardEvent } from 'react';
 import type { Coin } from '@/lib/coingecko';
 import { coin_selected } from '@/lib/analytics/events';
@@ -33,17 +34,17 @@ export function CoinCard({ coin, rank }: CoinCardProps) {
     });
   }
 
-  function handleKeyDown(event: KeyboardEvent<HTMLElement>) {
-    if (event.key === 'Enter' || event.key === ' ') {
+  function handleKeyDown(event: KeyboardEvent<HTMLAnchorElement>) {
+    // <Link> only activates on Enter; make Space work like a native button too.
+    if (event.key === ' ') {
       event.preventDefault();
-      handleSelect();
+      event.currentTarget.click();
     }
   }
 
   return (
-    <article
-      role="button"
-      tabIndex={0}
+    <Link
+      href={`/coin/${coin.id}`}
       onClick={handleSelect}
       onKeyDown={handleKeyDown}
       className="group flex flex-col gap-4 rounded-xl border border-slate-800 bg-slate-900/60 p-4 transition-colors hover:border-slate-600 hover:bg-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
@@ -76,6 +77,6 @@ export function CoinCard({ coin, rank }: CoinCardProps) {
       </div>
 
       <Sparkline data={coin.sparkline_in_7d?.price ?? []} className="h-[34px] w-full" />
-    </article>
+    </Link>
   );
 }
