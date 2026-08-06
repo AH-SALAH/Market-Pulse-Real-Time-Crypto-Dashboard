@@ -1,6 +1,6 @@
 # Market Pulse
 
-Real-time cryptocurrency market dashboard built with Next.js 16, React Query, Redux Toolkit, MongoDB Atlas, and GA4/GTM analytics. Demonstrates five gap skills required for senior frontend roles.
+Real-time cryptocurrency market dashboard built with Next.js 16, React Query, Redux Toolkit, MongoDB Atlas, and GA4/GTM analytics.
 
 ## JD Skills Mapping
 
