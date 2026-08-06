@@ -137,3 +137,4 @@ IMPROVEMENTS*
 prompts/
 portfolio*
 tasks*
+!.storybook/
