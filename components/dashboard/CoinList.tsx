@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { useFormatter, useTranslations } from 'next-intl';
 import type { RootState } from '@/store';
 import type { Coin } from '@/lib/coingecko';
 import { cn } from '@/lib/cn';
@@ -11,6 +12,8 @@ import { CoinCard, CoinCardSkeleton } from './CoinCard';
 const NO_COINS: Coin[] = [];
 
 export function CoinList() {
+  const t = useTranslations('CoinList');
+  const format = useFormatter();
   const { data, isLoading, isError, error, refetch, isRefetching, dataUpdatedAt } = useCoins();
 
   // ==== Redux / React Query boundary (PLAN.md §4.3) ====
@@ -44,7 +47,7 @@ export function CoinList() {
       <div
         className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
         role="status"
-        aria-label="Loading coin list"
+        aria-label={t('loadingAria')}
       >
         {Array.from({ length: 8 }, (_, i) => (
           <CoinCardSkeleton key={i} />
@@ -60,14 +63,14 @@ export function CoinList() {
         role="alert"
       >
         <p className="text-sm text-red-300">
-          Failed to load coin data: {(error as Error).message}
+          {t('loadError', { message: (error as Error).message })}
         </p>
         <button
           type="button"
           onClick={() => refetch()}
           className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-200 transition-colors hover:bg-red-500/20"
         >
-          Retry
+          {t('retry')}
         </button>
       </div>
     );
@@ -81,21 +84,23 @@ export function CoinList() {
             className={cn('h-1.5 w-1.5 rounded-full', isRefetching ? 'bg-emerald-400' : 'bg-emerald-500/50')}
             aria-hidden="true"
           />
-          Live · polled every 60s
+          {t('live')}
         </span>
         <span className="flex items-center gap-3">
           {searchQuery && (
             <span>
-              {visibleCoins.length} of {coins.length} coins
+              {t('count', { count: visibleCoins.length, total: coins.length })}
             </span>
           )}
           <span className="font-mono tabular-nums">
             {dataUpdatedAt
-              ? `Updated ${new Date(dataUpdatedAt).toLocaleTimeString('en-US', {
-                  hour: '2-digit',
-                  minute: '2-digit',
-                  second: '2-digit',
-                })}`
+              ? t('updated', {
+                  time: format.dateTime(new Date(dataUpdatedAt), {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                  }),
+                })
               : '—'}
           </span>
         </span>
@@ -107,10 +112,10 @@ export function CoinList() {
           role="status"
         >
           <p className="text-sm text-slate-400">
-            No coins match{' '}
+            {t('noMatches')}{' '}
             <span className="font-medium text-slate-200">&ldquo;{searchQuery}&rdquo;</span>
           </p>
-          <p className="text-xs text-slate-600">Try a different name or ticker symbol.</p>
+          <p className="text-xs text-slate-600">{t('noMatchesHint')}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

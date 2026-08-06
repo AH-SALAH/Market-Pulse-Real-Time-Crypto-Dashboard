@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   DEFAULT_CONSENT,
   getStoredConsent,
@@ -30,6 +31,7 @@ const ALL_DENIED: ConsentState = {
 };
 
 export function ConsentBanner() {
+  const t = useTranslations('Consent');
   const [visible, setVisible] = useState(false);
   const [customizing, setCustomizing] = useState(false);
   const [adConsent, setAdConsent] = useState(false);
@@ -62,16 +64,13 @@ export function ConsentBanner() {
     <div
       role="dialog"
       aria-live="polite"
-      aria-label="Cookie consent"
+      aria-label={t('aria')}
       className="fixed inset-x-0 bottom-0 z-50 border-t border-slate-800 bg-slate-900/95 p-4 backdrop-blur"
     >
       <div className="mx-auto flex max-w-7xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="max-w-2xl text-sm text-slate-300">
-          <p className="font-medium text-slate-100">We value your privacy</p>
-          <p className="mt-1">
-            We use cookies to measure usage and improve the experience. Analytics only run
-            after you consent.
-          </p>
+          <p className="font-medium text-slate-100">{t('title')}</p>
+          <p className="mt-1">{t('body')}</p>
         </div>
 
         <div className="flex shrink-0 flex-wrap items-center gap-2">
@@ -83,7 +82,7 @@ export function ConsentBanner() {
                   checked={analyticsConsent}
                   onChange={(event) => setAnalyticsConsent(event.target.checked)}
                 />
-                Analytics
+                {t('analytics')}
               </label>
               <label className="flex items-center gap-2 text-sm text-slate-200">
                 <input
@@ -91,14 +90,14 @@ export function ConsentBanner() {
                   checked={adConsent}
                   onChange={(event) => setAdConsent(event.target.checked)}
                 />
-                Ads
+                {t('ads')}
               </label>
               <button
                 type="button"
                 onClick={saveCustom}
                 className="rounded-lg bg-blue-500 px-3 py-1.5 text-sm font-medium text-slate-950 transition-colors hover:bg-blue-400"
               >
-                Save
+                {t('save')}
               </button>
             </div>
           ) : (
@@ -108,21 +107,21 @@ export function ConsentBanner() {
                 onClick={() => setCustomizing(true)}
                 className="rounded-lg border border-slate-700 px-3 py-1.5 text-sm font-medium text-slate-300 transition-colors hover:bg-slate-800"
               >
-                Customize
+                {t('customize')}
               </button>
               <button
                 type="button"
                 onClick={() => choose(ALL_DENIED)}
                 className="rounded-lg border border-slate-700 px-3 py-1.5 text-sm font-medium text-slate-300 transition-colors hover:bg-slate-800"
               >
-                Reject all
+                {t('rejectAll')}
               </button>
               <button
                 type="button"
                 onClick={() => choose(ALL_GRANTED)}
                 className="rounded-lg bg-blue-500 px-3 py-1.5 text-sm font-medium text-slate-950 transition-colors hover:bg-blue-400"
               >
-                Accept all
+                {t('acceptAll')}
               </button>
             </>
           )}

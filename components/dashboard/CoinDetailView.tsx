@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
+import { useFormatter, useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import { useCoinDetail } from '@/hooks/useCoinDetail';
 import { useCoins } from '@/hooks/useCoins';
 import { formatPrice } from '@/lib/format';
@@ -15,6 +16,8 @@ interface CoinDetailViewProps {
 }
 
 export function CoinDetailView({ coinId }: CoinDetailViewProps) {
+  const t = useTranslations('CoinDetail');
+  const format = useFormatter();
   const [days, setDays] = useState(7);
   const { data, isLoading, isError, error, refetch, dataUpdatedAt, isRefetching } =
     useCoinDetail(coinId, days);
@@ -30,7 +33,10 @@ export function CoinDetailView({ coinId }: CoinDetailViewProps) {
         href="/"
         className="mb-6 inline-flex items-center gap-1.5 text-sm text-slate-400 transition-colors hover:text-slate-200"
       >
-        <span aria-hidden="true">&larr;</span> Back to markets
+        <span aria-hidden="true" className="rtl:flip inline-block">
+          &larr;
+        </span>{' '}
+        {t('back')}
       </Link>
 
       <section className="mb-6 flex flex-wrap items-start justify-between gap-4">
@@ -66,7 +72,7 @@ export function CoinDetailView({ coinId }: CoinDetailViewProps) {
         </div>
 
         <div className="flex items-center gap-2">
-          <WatchlistButton coinId={coinId} coinName={coin?.name ?? coinId} label="Watchlist" />
+          <WatchlistButton coinId={coinId} coinName={coin?.name ?? coinId} label={t('watchlistLabel')} />
           <RangeSelector coinId={coinId} value={days} onChange={setDays} />
         </div>
       </section>
@@ -77,36 +83,38 @@ export function CoinDetailView({ coinId }: CoinDetailViewProps) {
             className={`h-1.5 w-1.5 rounded-full ${isRefetching ? 'bg-emerald-400' : 'bg-emerald-500/50'}`}
             aria-hidden="true"
           />
-          Live · polled every 60s
+          {t('live')}
         </span>
         <span className="font-mono tabular-nums">
           {dataUpdatedAt
-            ? `Updated ${new Date(dataUpdatedAt).toLocaleTimeString('en-US', {
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-              })}`
+            ? t('updated', {
+                time: format.dateTime(new Date(dataUpdatedAt), {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  second: '2-digit',
+                }),
+              })
             : '—'}
         </span>
       </div>
 
       <div className="mt-3 rounded-xl border border-slate-800 bg-slate-900/60 p-4">
         {isLoading ? (
-          <div className="h-[320px] w-full animate-pulse rounded bg-slate-800/50" role="status" aria-label="Loading chart" />
+          <div className="h-[320px] w-full animate-pulse rounded bg-slate-800/50" role="status" aria-label={t('chartLoading')} />
         ) : isError ? (
           <div
             className="flex flex-col items-center gap-4 rounded-xl border border-red-500/20 bg-red-500/5 p-8 text-center"
             role="alert"
           >
             <p className="text-sm text-red-300">
-              Failed to load chart data: {(error as Error).message}
+              {t('chartError', { message: (error as Error).message })}
             </p>
             <button
               type="button"
               onClick={() => refetch()}
               className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-200 transition-colors hover:bg-red-500/20"
             >
-              Retry
+              {t('retry')}
             </button>
           </div>
         ) : (

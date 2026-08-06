@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import type { KeyboardEvent } from 'react';
 import type { Coin } from '@/lib/coingecko';
 import { coin_selected } from '@/lib/analytics/events';
@@ -42,7 +42,7 @@ export function CoinCard({ coin, rank }: CoinCardProps) {
     >
       <div className="flex items-center gap-3">
         {rank !== undefined && (
-          <span className="w-5 shrink-0 text-right font-mono text-sm font-semibold tabular-nums text-slate-600">
+          <span className="w-5 shrink-0 text-end font-mono text-sm font-semibold tabular-nums text-slate-600">
             {rank}
           </span>
         )}
@@ -59,7 +59,7 @@ export function CoinCard({ coin, rank }: CoinCardProps) {
           <h3 className="truncate text-sm font-semibold text-slate-100">{coin.name}</h3>
           <p className="font-mono text-xs uppercase tracking-wide text-slate-500">{coin.symbol}</p>
         </div>
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ms-auto flex items-center gap-2">
           <WatchlistButton coinId={coin.id} coinName={coin.name} />
           <div className="flex flex-col items-end gap-1">
             <span className="font-mono text-sm font-semibold tabular-nums text-slate-100">

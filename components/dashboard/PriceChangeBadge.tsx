@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/cn';
 
 interface PriceChangeBadgeProps {
@@ -12,6 +13,7 @@ function formatChange(value: number): string {
 }
 
 export function PriceChangeBadge({ value, className }: PriceChangeBadgeProps) {
+  const t = useTranslations('PriceChangeBadge');
   const isPositive = value > 0;
   const isNegative = value < 0;
 
@@ -24,7 +26,7 @@ export function PriceChangeBadge({ value, className }: PriceChangeBadgeProps) {
         !isPositive && !isNegative && 'bg-slate-500/10 text-slate-400',
         className,
       )}
-      aria-label={`${formatChange(value)} over the period`}
+      aria-label={t('aria', { change: formatChange(value) })}
     >
       <span aria-hidden="true">{isPositive ? '▲' : isNegative ? '▼' : '•'}</span>
       {formatChange(value)}

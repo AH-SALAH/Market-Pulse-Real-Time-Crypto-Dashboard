@@ -1,6 +1,7 @@
 'use client';
 
-import Link from 'next/link';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import { useCoins } from '@/hooks/useCoins';
 import { useWatchlist } from '@/hooks/useWatchlist';
 import { coin_selected } from '@/lib/analytics/events';
@@ -26,6 +27,7 @@ function SkeletonRow() {
 }
 
 export function WatchlistView() {
+  const t = useTranslations('Watchlist');
   const watchlistQuery = useWatchlist();
   const coinsQuery = useCoins();
 
@@ -46,10 +48,8 @@ export function WatchlistView() {
     <div className="space-y-6">
       <section className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-100">Watchlist</h1>
-          <p className="mt-1 text-sm text-slate-400">
-            Coins you&apos;re tracking — prices refresh live.
-          </p>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-100">{t('title')}</h1>
+          <p className="mt-1 text-sm text-slate-400">{t('subtitle')}</p>
         </div>
         <span className="flex items-center gap-1.5 text-xs text-slate-500">
           <span
@@ -59,12 +59,12 @@ export function WatchlistView() {
             )}
             aria-hidden="true"
           />
-          Live · polled every 60s
+          {t('live')}
         </span>
       </section>
 
       {isLoading ? (
-        <ul role="status" aria-label="Loading watchlist" className="space-y-2">
+        <ul role="status" aria-label={t('loadingAria')} className="space-y-2">
           {Array.from({ length: 3 }, (_, i) => (
             <SkeletonRow key={i} />
           ))}
@@ -75,31 +75,29 @@ export function WatchlistView() {
           role="alert"
         >
           <p className="text-sm text-red-300">
-            Failed to load watchlist: {(watchlistQuery.error as Error).message}
+            {t('loadError', { message: (watchlistQuery.error as Error).message })}
           </p>
           <button
             type="button"
             onClick={() => watchlistQuery.refetch()}
             className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-200 transition-colors hover:bg-red-500/20"
           >
-            Retry
+            {t('retry')}
           </button>
         </div>
       ) : rows.length === 0 ? (
         <div className="flex flex-col items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/60 p-10 text-center">
-          <p className="text-sm font-medium text-slate-200">Your watchlist is empty</p>
-          <p className="max-w-sm text-sm text-slate-400">
-            Save coins you want to track and they&apos;ll show up here with live prices.
-          </p>
+          <p className="text-sm font-medium text-slate-200">{t('emptyTitle')}</p>
+          <p className="max-w-sm text-sm text-slate-400">{t('emptyHint')}</p>
           <Link
             href="/"
             className="rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-slate-950 transition-colors hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
           >
-            Browse markets
+            {t('browseMarkets')}
           </Link>
         </div>
       ) : (
-        <ul className="space-y-2" aria-label="Watchlisted coins">
+        <ul className="space-y-2" aria-label={t('listAria')}>
           {rows.map(({ coin }) => (
             <li key={coin.id}>
               <Link
@@ -127,10 +125,10 @@ export function WatchlistView() {
 
                 <Sparkline
                   data={coin.sparkline_in_7d?.price ?? []}
-                  className="ml-auto hidden h-[30px] w-24 shrink-0 sm:block"
+                  className="ms-auto hidden h-[30px] w-24 shrink-0 sm:block"
                 />
 
-                <div className="ml-4 flex shrink-0 flex-col items-end gap-1 sm:ml-0">
+                <div className="ms-4 flex shrink-0 flex-col items-end gap-1 sm:ms-0">
                   <span className="font-mono text-sm font-semibold tabular-nums text-slate-100">
                     {formatPrice(coin.current_price)}
                   </span>

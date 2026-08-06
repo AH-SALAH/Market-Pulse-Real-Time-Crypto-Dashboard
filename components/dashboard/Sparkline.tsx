@@ -1,4 +1,5 @@
 import { useId } from 'react';
+import { useTranslations } from 'next-intl';
 import styles from './Sparkline.module.scss';
 import { cn } from '@/lib/cn';
 
@@ -31,10 +32,12 @@ function toPoints(data: number[], width: number, height: number): string {
 }
 
 export function Sparkline({ data, width = 104, height = 34, className }: SparklineProps) {
+  const t = useTranslations('Sparkline');
   const gradientId = useId();
   const trend = data.length > 1 ? data[data.length - 1] - data[0] : 0;
   const isUp = trend > 0;
   const isDown = trend < 0;
+  const trendLabel = isUp ? t('upward') : isDown ? t('downward') : t('flat');
 
   const points = toPoints(data, width, height);
   const area = points ? `0,${height} ${points} ${width},${height}` : '';
@@ -45,7 +48,7 @@ export function Sparkline({ data, width = 104, height = 34, className }: Sparkli
       width={width}
       height={height}
       role="img"
-      aria-label={`7-day price sparkline, ${isUp ? 'upward' : isDown ? 'downward' : 'flat'} trend`}
+      aria-label={t('aria', { trend: trendLabel })}
       className={cn(styles.sparkline, isUp && styles.up, isDown && styles.down, className)}
       preserveAspectRatio="none"
     >

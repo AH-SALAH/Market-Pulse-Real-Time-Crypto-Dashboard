@@ -1,4 +1,6 @@
 import type { Preview } from '@storybook/nextjs-vite'
+import { NextIntlClientProvider } from 'next-intl'
+import defaultMessages from '../messages/en.json'
 
 const preview: Preview = {
   parameters: {
@@ -16,6 +18,17 @@ const preview: Preview = {
       test: 'todo'
     }
   },
+
+  // Components now read UI strings via useTranslations and render locale-aware
+  // navigation links — provide the default (English) request config globally
+  // so every story renders like a minimal /en route.
+  decorators: [
+    (Story) => (
+      <NextIntlClientProvider locale="en" messages={defaultMessages}>
+        <Story />
+      </NextIntlClientProvider>
+    ),
+  ],
 };
 
 export default preview;

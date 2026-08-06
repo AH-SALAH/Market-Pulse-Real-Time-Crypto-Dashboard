@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/cn';
 import { useAddToWatchlist, useRemoveFromWatchlist, useWatchlist } from '@/hooks/useWatchlist';
 
@@ -29,6 +30,7 @@ function BookmarkIcon({ filled }: { filled: boolean }) {
 }
 
 export function WatchlistButton({ coinId, coinName, className, label }: WatchlistButtonProps) {
+  const t = useTranslations('WatchlistButton');
   const { data: watchlist, isLoading } = useWatchlist();
   const addMutation = useAddToWatchlist();
   const removeMutation = useRemoveFromWatchlist();
@@ -55,8 +57,8 @@ export function WatchlistButton({ coinId, coinName, className, label }: Watchlis
       type="button"
       onClick={handleToggle}
       aria-pressed={watched}
-      aria-label={watched ? `Remove ${coinName} from watchlist` : `Add ${coinName} to watchlist`}
-      title={watched ? 'In watchlist' : 'Add to watchlist'}
+      aria-label={watched ? t('removeAria', { coin: coinName }) : t('addAria', { coin: coinName })}
+      title={watched ? t('inWatchlist') : t('addTitle')}
       disabled={pending || isLoading}
       className={cn(
         'inline-flex shrink-0 items-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500',

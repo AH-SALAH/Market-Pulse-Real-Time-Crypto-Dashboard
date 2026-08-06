@@ -16,6 +16,12 @@ body {
   min-height: 100vh;
 }
 
+// Arabic (RTL) locale renders with a dedicated Arabic face first — Geist is
+// latin-only and would fall back to a generic system font for Arabic glyphs.
+html[lang='ar'] body {
+  font-family: var(--font-arabic), var(--font-geist-sans), system-ui, sans-serif;
+}
+
 // Utility for RTL support
 [dir="rtl"] {
   .rtl\:flip {

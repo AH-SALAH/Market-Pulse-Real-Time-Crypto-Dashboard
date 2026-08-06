@@ -1,0 +1,101 @@
+{
+  "Metadata": {
+    "title": "Market Pulse",
+    "description": "Real-time cryptocurrency market dashboard"
+  },
+  "Header": {
+    "brand": "Market Pulse",
+    "navAria": "Main navigation",
+    "nav": {
+      "markets": "Markets",
+      "watchlist": "Watchlist"
+    }
+  },
+  "LanguageSwitcher": {
+    "aria": "Language"
+  },
+  "MarketsPage": {
+    "title": "Markets",
+    "subtitle": "Top cryptocurrencies by market cap, refreshed live."
+  },
+  "CoinList": {
+    "loadingAria": "Loading coin list",
+    "loadError": "Failed to load coin data: {message}",
+    "retry": "Retry",
+    "live": "Live · polled every 60s",
+    "count": "{count} of {total} coins",
+    "updated": "Updated {time}",
+    "noMatches": "No coins match",
+    "noMatchesHint": "Try a different name or ticker symbol."
+  },
+  "FilterBar": {
+    "sortBy": "Sort by",
+    "marketCap": "Market cap",
+    "price": "Price",
+    "change24h": "24h change",
+    "search": "Search coins",
+    "clearSearch": "Clear search"
+  },
+  "PriceChangeBadge": {
+    "aria": "{change} over the period"
+  },
+  "Sparkline": {
+    "aria": "7-day price sparkline, {trend} trend",
+    "upward": "upward",
+    "downward": "downward",
+    "flat": "flat"
+  },
+  "CoinDetail": {
+    "title": "{coin} · Market Pulse",
+    "description": "Real-time price chart for {coin}",
+    "back": "Back to markets",
+    "watchlistLabel": "Watchlist",
+    "live": "Live · polled every 60s",
+    "updated": "Updated {time}",
+    "chartLoading": "Loading chart",
+    "chartError": "Failed to load chart data: {message}",
+    "retry": "Retry"
+  },
+  "RangeSelector": {
+    "aria": "Chart range",
+    "day1": "1D",
+    "day7": "7D",
+    "day30": "30D"
+  },
+  "PriceChart": {
+    "dayChart": "{days, plural, =1 {1 day price chart} other {{days} day price chart}}"
+  },
+  "WatchlistPage": {
+    "title": "Watchlist · Market Pulse",
+    "description": "Coins you are tracking, refreshed live."
+  },
+  "Watchlist": {
+    "title": "Watchlist",
+    "subtitle": "Coins you're tracking — prices refresh live.",
+    "live": "Live · polled every 60s",
+    "loadingAria": "Loading watchlist",
+    "loadError": "Failed to load watchlist: {message}",
+    "retry": "Retry",
+    "emptyTitle": "Your watchlist is empty",
+    "emptyHint": "Save coins you want to track and they'll show up here with live prices.",
+    "browseMarkets": "Browse markets",
+    "listAria": "Watchlisted coins"
+  },
+  "WatchlistButton": {
+    "addAria": "Add {coin} to watchlist",
+    "removeAria": "Remove {coin} from watchlist",
+    "addTitle": "Add to watchlist",
+    "inWatchlist": "In watchlist"
+  },
+  "Consent": {
+    "aria": "Cookie consent",
+    "title": "We value your privacy",
+    "body": "We use cookies to measure usage and improve the experience. Analytics only run after you consent.",
+    "analytics": "Analytics",
+    "ads": "Ads",
+    "save": "Save",
+    "customize": "Customize",
+    "rejectAll": "Reject all",
+    "acceptAll": "Accept all"
+  }
+}

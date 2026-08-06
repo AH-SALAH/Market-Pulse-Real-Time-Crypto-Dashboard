@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
+import { useTranslations } from 'next-intl';
 import styles from './PriceChart.module.scss';
 
 interface PriceChartProps {
@@ -24,6 +25,7 @@ const INNER_H = HEIGHT - MARGIN.top - MARGIN.bottom;
  */
 export function PriceChart({ prices, days }: PriceChartProps) {
   const svgRef = useRef<SVGSVGElement | null>(null);
+  const t = useTranslations('PriceChart');
 
   useEffect(() => {
     const svgNode = svgRef.current;
@@ -156,7 +158,7 @@ export function PriceChart({ prices, days }: PriceChartProps) {
         ref={svgRef}
         className={styles.chart}
         role="img"
-        aria-label={`${days} day price chart`}
+        aria-label={t('dayChart', { days })}
       />
     </div>
   );
