@@ -16,10 +16,10 @@ Single source of truth: `lib/analytics/events.ts`. Every event is pushed via `pu
 | `virtual_pageview` | Every route change (`hooks/useVirtualPageview.ts`, via `usePathname`/`useSearchParams`) | `page_path`, `page_title` |
 | `coin_selected` | Click/keyboard-activate on a coin card (`components/dashboard/CoinCard.tsx`) | `coin_id`, `coin_name`, `coin_symbol` |
 | `watchlist_added` | Add-to-watchlist button on coin card / detail page | `coin_id`, `coin_name` |
-| `filter_applied` | Sort dropdown change or search input (`components/dashboard/FilterBar.tsx`) | `filter_type` (`sort`/`search`), `filter_value` (redacted) |
+| `filter_applied` | Sort dropdown change (`components/dashboard/FilterBar.tsx`) — search is tracked separately via `search_performed` | `filter_type` (`sort`), `filter_value` (redacted) |
 | `chart_range_changed` | 1D/7D/30D range button on detail page (`components/dashboard/RangeSelector.tsx`) | `coin_id`, `days` |
 | `price_alert_created` | Price alert form submit on detail page | `coin_id`, `target_price`, `note` (redacted, optional) |
-| `search_performed` | Debounced search input (300ms) — wired in Phase 5 (T041) | `search_term` (redacted) |
+| `search_performed` | Debounced search input (300ms) in `components/dashboard/FilterBar.tsx`, fires once the user stops typing | `search_term` (redacted) |
 
 ## Naming Convention
 
