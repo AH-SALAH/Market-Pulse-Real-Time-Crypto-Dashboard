@@ -74,3 +74,24 @@ export function CoinCard({ coin, rank }: CoinCardProps) {
     </Link>
   );
 }
+
+// Loading placeholder matching CoinCard's layout — used by CoinList and the
+// CoinCard Storybook story so the skeleton lives beside the component it stands in for.
+export function CoinCardSkeleton() {
+  return (
+    <div className="flex flex-col gap-4 rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+      <div className="flex items-center gap-3">
+        <div className="h-7 w-7 shrink-0 animate-pulse rounded-full bg-slate-800" />
+        <div className="flex-1 space-y-2">
+          <div className="h-3.5 w-24 animate-pulse rounded bg-slate-800" />
+          <div className="h-3 w-10 animate-pulse rounded bg-slate-800/70" />
+        </div>
+        <div className="flex flex-col items-end gap-2">
+          <div className="h-3.5 w-16 animate-pulse rounded bg-slate-800" />
+          <div className="h-5 w-12 animate-pulse rounded-full bg-slate-800/70" />
+        </div>
+      </div>
+      <div className="h-[34px] w-full animate-pulse rounded bg-slate-800/50" />
+    </div>
+  );
+}
