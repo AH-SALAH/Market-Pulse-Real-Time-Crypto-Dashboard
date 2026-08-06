@@ -1,0 +1,148 @@
+'use client';
+
+import Link from 'next/link';
+import { useCoins } from '@/hooks/useCoins';
+import { useWatchlist } from '@/hooks/useWatchlist';
+import { coin_selected } from '@/lib/analytics/events';
+import { formatPrice } from '@/lib/format';
+import { cn } from '@/lib/cn';
+import { PriceChangeBadge } from './PriceChangeBadge';
+import { Sparkline } from './Sparkline';
+import { WatchlistButton } from './WatchlistButton';
+
+function SkeletonRow() {
+  return (
+    <li className="flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/60 px-4 py-3">
+      <div className="h-8 w-8 shrink-0 animate-pulse rounded-full bg-slate-800" />
+      <div className="min-w-0 flex-1 space-y-2">
+        <div className="h-3.5 w-28 animate-pulse rounded bg-slate-800" />
+        <div className="h-3 w-12 animate-pulse rounded bg-slate-800/70" />
+      </div>
+      <div className="h-[30px] w-24 animate-pulse rounded bg-slate-800/50" />
+      <div className="h-3.5 w-16 animate-pulse rounded bg-slate-800" />
+      <div className="h-5 w-12 animate-pulse rounded-full bg-slate-800/70" />
+    </li>
+  );
+}
+
+export function WatchlistView() {
+  const watchlistQuery = useWatchlist();
+  const coinsQuery = useCoins();
+
+  const items = watchlistQuery.data ?? [];
+  const coins = coinsQuery.data ?? [];
+
+  // Resolve watchlisted ids against the live market list (React Query cache,
+  // no extra request). A coin saved earlier may have fallen out of the top
+  // list — those rows are skipped rather than shown with stale data.
+  const coinsById = new Map(coins.map((coin) => [coin.id, coin]));
+  const rows = items
+    .map((item) => ({ coin: coinsById.get(item.coinId), addedAt: item.addedAt }))
+    .filter((row): row is { coin: (typeof coins)[number]; addedAt: string } => Boolean(row.coin));
+
+  const isLoading = watchlistQuery.isLoading || coinsQuery.isLoading;
+
+  return (
+    <div className="space-y-6">
+      <section className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-100">Watchlist</h1>
+          <p className="mt-1 text-sm text-slate-400">
+            Coins you&apos;re tracking — prices refresh live.
+          </p>
+        </div>
+        <span className="flex items-center gap-1.5 text-xs text-slate-500">
+          <span
+            className={cn(
+              'h-1.5 w-1.5 rounded-full',
+              coinsQuery.isRefetching ? 'bg-emerald-400' : 'bg-emerald-500/50',
+            )}
+            aria-hidden="true"
+          />
+          Live · polled every 60s
+        </span>
+      </section>
+
+      {isLoading ? (
+        <ul role="status" aria-label="Loading watchlist" className="space-y-2">
+          {Array.from({ length: 3 }, (_, i) => (
+            <SkeletonRow key={i} />
+          ))}
+        </ul>
+      ) : watchlistQuery.isError ? (
+        <div
+          className="flex flex-col items-center gap-4 rounded-xl border border-red-500/20 bg-red-500/5 p-8 text-center"
+          role="alert"
+        >
+          <p className="text-sm text-red-300">
+            Failed to load watchlist: {(watchlistQuery.error as Error).message}
+          </p>
+          <button
+            type="button"
+            onClick={() => watchlistQuery.refetch()}
+            className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-200 transition-colors hover:bg-red-500/20"
+          >
+            Retry
+          </button>
+        </div>
+      ) : rows.length === 0 ? (
+        <div className="flex flex-col items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/60 p-10 text-center">
+          <p className="text-sm font-medium text-slate-200">Your watchlist is empty</p>
+          <p className="max-w-sm text-sm text-slate-400">
+            Save coins you want to track and they&apos;ll show up here with live prices.
+          </p>
+          <Link
+            href="/"
+            className="rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-slate-950 transition-colors hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
+          >
+            Browse markets
+          </Link>
+        </div>
+      ) : (
+        <ul className="space-y-2" aria-label="Watchlisted coins">
+          {rows.map(({ coin }) => (
+            <li key={coin.id}>
+              <Link
+                href={`/coin/${coin.id}`}
+                onClick={() =>
+                  coin_selected({ coin_id: coin.id, coin_name: coin.name, coin_symbol: coin.symbol })
+                }
+                className="group flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/60 px-4 py-3 transition-colors hover:border-slate-600 hover:bg-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={coin.image}
+                  alt=""
+                  width={32}
+                  height={32}
+                  className="h-8 w-8 shrink-0 rounded-full"
+                  loading="lazy"
+                />
+                <div className="min-w-0">
+                  <h3 className="truncate text-sm font-semibold text-slate-100">{coin.name}</h3>
+                  <p className="font-mono text-xs uppercase tracking-wide text-slate-500">
+                    {coin.symbol}
+                  </p>
+                </div>
+
+                <Sparkline
+                  data={coin.sparkline_in_7d?.price ?? []}
+                  className="ml-auto hidden h-[30px] w-24 shrink-0 sm:block"
+                />
+
+                <div className="ml-4 flex shrink-0 flex-col items-end gap-1 sm:ml-0">
+                  <span className="font-mono text-sm font-semibold tabular-nums text-slate-100">
+                    {formatPrice(coin.current_price)}
+                  </span>
+                  <PriceChangeBadge value={coin.price_change_percentage_24h ?? 0} />
+                </div>
+
+                <WatchlistButton coinId={coin.id} coinName={coin.name} />
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}

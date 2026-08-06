@@ -1,16 +1,16 @@
-import Link from 'next/link';
+'use client';
 
-const NAV_ITEMS: Array<{
-  label: string;
-  href: string;
-  active?: boolean;
-  disabled?: boolean;
-}> = [
-  { label: 'Markets', href: '/', active: true },
-  { label: 'Watchlist', href: '/watchlist', disabled: true },
-];
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+
+const NAV_ITEMS = [
+  { label: 'Markets', href: '/' },
+  { label: 'Watchlist', href: '/watchlist' },
+] as const;
 
 export function Header() {
+  const pathname = usePathname();
+
   return (
     <header className="sticky top-0 z-10 border-b border-slate-800 bg-slate-950/80 backdrop-blur">
       <div className="mx-auto flex h-14 max-w-7xl items-center gap-6 px-4">
@@ -25,30 +25,23 @@ export function Header() {
         </Link>
 
         <nav className="flex items-center gap-1 text-sm" aria-label="Main navigation">
-          {NAV_ITEMS.map((item) =>
-            item.disabled ? (
-              <span
-                key={item.label}
-                className="cursor-not-allowed px-3 py-1.5 text-slate-600"
-                aria-disabled="true"
-              >
-                {item.label}
-              </span>
-            ) : (
+          {NAV_ITEMS.map((item) => {
+            const active = pathname === item.href;
+            return (
               <Link
-                key={item.label}
+                key={item.href}
                 href={item.href}
-                aria-current={item.active ? 'page' : undefined}
+                aria-current={active ? 'page' : undefined}
                 className={`rounded-lg px-3 py-1.5 transition-colors ${
-                  item.active
+                  active
                     ? 'bg-slate-800 font-medium text-slate-100'
                     : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200'
                 }`}
               >
                 {item.label}
               </Link>
-            ),
-          )}
+            );
+          })}
         </nav>
       </div>
     </header>

@@ -4,23 +4,14 @@ import Link from 'next/link';
 import type { KeyboardEvent } from 'react';
 import type { Coin } from '@/lib/coingecko';
 import { coin_selected } from '@/lib/analytics/events';
+import { formatPrice } from '@/lib/format';
 import { PriceChangeBadge } from './PriceChangeBadge';
 import { Sparkline } from './Sparkline';
+import { WatchlistButton } from './WatchlistButton';
 
 interface CoinCardProps {
   coin: Coin;
   rank?: number;
-}
-
-function formatPrice(price: number): string {
-  const fractionDigits =
-    price >= 1000 ? 0 : price >= 1 ? 2 : price >= 0.01 ? 4 : 6;
-  return price.toLocaleString('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: Math.min(2, fractionDigits),
-    maximumFractionDigits: fractionDigits,
-  });
 }
 
 export function CoinCard({ coin, rank }: CoinCardProps) {
@@ -68,11 +59,14 @@ export function CoinCard({ coin, rank }: CoinCardProps) {
           <h3 className="truncate text-sm font-semibold text-slate-100">{coin.name}</h3>
           <p className="font-mono text-xs uppercase tracking-wide text-slate-500">{coin.symbol}</p>
         </div>
-        <div className="ml-auto flex flex-col items-end gap-1">
-          <span className="font-mono text-sm font-semibold tabular-nums text-slate-100">
-            {formatPrice(coin.current_price)}
-          </span>
-          <PriceChangeBadge value={change} />
+        <div className="ml-auto flex items-center gap-2">
+          <WatchlistButton coinId={coin.id} coinName={coin.name} />
+          <div className="flex flex-col items-end gap-1">
+            <span className="font-mono text-sm font-semibold tabular-nums text-slate-100">
+              {formatPrice(coin.current_price)}
+            </span>
+            <PriceChangeBadge value={change} />
+          </div>
         </div>
       </div>
 

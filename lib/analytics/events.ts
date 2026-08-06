@@ -12,6 +12,11 @@ interface WatchlistAddedParams {
   coin_name: string;
 }
 
+interface WatchlistRemovedParams {
+  coin_id: string;
+  coin_name: string;
+}
+
 interface FilterAppliedParams {
   filter_type: 'sort' | 'search';
   filter_value: string;
@@ -42,6 +47,13 @@ export function coin_selected(params: CoinSelectedParams): void {
 export function watchlist_added(params: WatchlistAddedParams): void {
   pushToDataLayer({
     event: 'watchlist_added',
+    ...params,
+  });
+}
+
+export function watchlist_removed(params: WatchlistRemovedParams): void {
+  pushToDataLayer({
+    event: 'watchlist_removed',
     ...params,
   });
 }

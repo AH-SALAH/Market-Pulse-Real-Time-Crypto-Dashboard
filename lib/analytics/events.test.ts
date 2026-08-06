@@ -13,6 +13,7 @@ import {
   price_alert_created,
   search_performed,
   watchlist_added,
+  watchlist_removed,
 } from './events';
 
 describe('analytics events', () => {
@@ -34,6 +35,15 @@ describe('analytics events', () => {
     watchlist_added({ coin_id: 'ethereum', coin_name: 'Ethereum' });
     expect(pushMock).toHaveBeenCalledWith({
       event: 'watchlist_added',
+      coin_id: 'ethereum',
+      coin_name: 'Ethereum',
+    });
+  });
+
+  it('watchlist_removed pushes event', () => {
+    watchlist_removed({ coin_id: 'ethereum', coin_name: 'Ethereum' });
+    expect(pushMock).toHaveBeenCalledWith({
+      event: 'watchlist_removed',
       coin_id: 'ethereum',
       coin_name: 'Ethereum',
     });

@@ -6,7 +6,7 @@ Real-time cryptocurrency market dashboard built with Next.js 16, React Query, Re
 
 | JD Requirement | Implementation | Key Files |
 |----------------|----------------|-----------|
-| GA4/GTM Analytics | Consent Mode v2, virtual pageviews, 6-event taxonomy, PII redaction | `lib/analytics/`, `components/ConsentBanner.tsx`, `components/GTMScript.tsx` |
+| GA4/GTM Analytics | Consent Mode v2, virtual pageviews, 8-event taxonomy, PII redaction | `lib/analytics/`, `components/ConsentBanner.tsx`, `components/GTMScript.tsx` |
 | React Query (TanStack v5) | Server state management, polling via `refetchInterval: 60000`, mutations | `hooks/useCoins.ts`, `hooks/useCoinDetail.ts`, `hooks/useWatchlist.ts` |
 | Redux Toolkit | Client/UI state only (filters, sort, theme), `createSlice`, `configureStore` | `store/slices/filtersSlice.ts`, `store/index.ts` |
 | Storybook | Every reusable component with 3+ states (default, loading, error/empty) | `components/**/*.stories.tsx` |
@@ -25,12 +25,15 @@ Real-time cryptocurrency market dashboard built with Next.js 16, React Query, Re
 CoinGecko Demo API (free signup) — proxied via Next.js Route Handlers to keep API key server-side:
 - `GET /api/coins` → CoinGecko `/coins/markets?sparkline=true`
 - `GET /api/coins/[id]/chart` → CoinGecko `/coins/{id}/market_chart`
+- `GET|POST /api/watchlist`, `DELETE /api/watchlist/[coinId]` → anonymous-session watchlist CRUD
 
 Polling via React Query `refetchInterval: 60000` simulates real-time without WebSockets.
 
 ## Database
 
-MongoDB Atlas free tier for watchlists and price alerts. Every query includes N1QL comment equivalent for Couchbase interview readiness.
+MongoDB Atlas free tier for watchlists. Every query in `lib/db/` includes an N1QL comment equivalent for Couchbase interview readiness. The Mongo client connects lazily (`lib/db/client.ts`) and every watchlist query falls back to an in-memory store until a real `DB_CONNECTION_STRING` is set — so the app is fully demoable without a cluster, and dropping in a connection string enables durable persistence with zero code changes.
+
+**Next step:** price alerts (`lib/db/alerts.ts` + API route, `price_alert_created` event) — same session-scoped pattern.
 
 ## Development
 

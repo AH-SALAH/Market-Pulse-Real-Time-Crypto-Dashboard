@@ -4,9 +4,11 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useCoinDetail } from '@/hooks/useCoinDetail';
 import { useCoins } from '@/hooks/useCoins';
+import { formatPrice } from '@/lib/format';
 import { PriceChart } from './PriceChart';
 import { RangeSelector } from './RangeSelector';
 import { PriceChangeBadge } from './PriceChangeBadge';
+import { WatchlistButton } from './WatchlistButton';
 
 interface CoinDetailViewProps {
   coinId: string;
@@ -55,11 +57,7 @@ export function CoinDetailView({ coinId }: CoinDetailViewProps) {
             {coin && (
               <div className="mt-1 flex items-center gap-2 text-sm">
                 <span className="font-mono tabular-nums text-slate-200">
-                  $
-                  {coin.current_price.toLocaleString('en-US', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 6,
-                  })}
+                  {formatPrice(coin.current_price)}
                 </span>
                 <PriceChangeBadge value={coin.price_change_percentage_24h ?? 0} />
               </div>
@@ -67,7 +65,10 @@ export function CoinDetailView({ coinId }: CoinDetailViewProps) {
           </div>
         </div>
 
-        <RangeSelector coinId={coinId} value={days} onChange={setDays} />
+        <div className="flex items-center gap-2">
+          <WatchlistButton coinId={coinId} coinName={coin?.name ?? coinId} label="Watchlist" />
+          <RangeSelector coinId={coinId} value={days} onChange={setDays} />
+        </div>
       </section>
 
       <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
