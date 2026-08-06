@@ -1,10 +1,9 @@
 // Design tokens
 @use "./_variables.scss" as *;
 
-// Tailwind directives (v3 style, processed by Next.js Sass loader)
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+// Tailwind v4 entry — sass passes the plain-CSS @import through to the
+// @tailwindcss/postcss plugin, which expands it into base + utilities.
+@import "tailwindcss";
 
 // Global base styles
 :root {
