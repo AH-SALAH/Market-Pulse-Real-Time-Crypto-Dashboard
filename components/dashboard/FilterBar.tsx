@@ -3,6 +3,10 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslations } from 'next-intl';
+import IconButton from '@mui/material/IconButton';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import TextField from '@mui/material/TextField';
 import CloseIcon from '@mui/icons-material/Close';
 import type { AppDispatch, RootState } from '@/store';
 import { setSearchQuery, setSortBy, type SortBy } from '@/store/slices/filtersSlice';
@@ -56,42 +60,59 @@ export function FilterBar() {
       <label htmlFor="sort-by" className="text-sm font-medium text-slate-400">
         {t('sortBy')}
       </label>
-      <select
+      <Select<SortBy>
         id="sort-by"
         value={sortBy}
         onChange={(event) => handleSortChange(event.target.value as SortBy)}
-        className="h-9 rounded-lg border border-slate-800 bg-slate-900 px-3 text-sm text-slate-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
+        size="small"
+        className="min-w-32"
+        inputProps={{ 'aria-label': t('sortBy') }}
+        MenuProps={{
+          slotProps: {
+            paper: {
+              className: 'mt-1 rounded-lg shadow-xl',
+            },
+          },
+        }}
       >
         {SORT_OPTIONS.map((option) => (
-          <option key={option.value} value={option.value} className="bg-slate-900">
+          <MenuItem key={option.value} value={option.value}>
             {option.label}
-          </option>
+          </MenuItem>
         ))}
-      </select>
+      </Select>
 
       <div className="relative min-w-0 flex-1 sm:max-w-xs">
         <label htmlFor="search-coins" className="sr-only">
           {t('search')}
         </label>
-        <input
+        <TextField
           id="search-coins"
           type="text"
           value={searchQuery}
           onChange={(event) => handleSearchChange(event.target.value)}
           placeholder={t('search')}
           autoComplete="off"
-          className="h-9 w-full rounded-lg border border-slate-800 bg-slate-900 px-3 pe-9 text-sm text-slate-200 placeholder:text-slate-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
+          size="small"
+          fullWidth
+          slotProps={{
+            htmlInput: { 'aria-label': t('search') },
+            input: {
+              className: 'text-sm pe-1.5',
+              endAdornment: searchQuery ? (
+                <IconButton
+                  type="button"
+                  onClick={clearSearch}
+                  aria-label={t('clearSearch')}
+                  className="text-slate-500 hover:text-slate-200"
+                  size="small"
+                >
+                  <CloseIcon sx={{ fontSize: 16 }} aria-hidden="true" />
+                </IconButton>
+              ) : undefined,
+            },
+          }}
         />
-        {searchQuery && (
-          <button
-            type="button"
-            onClick={clearSearch}
-            aria-label={t('clearSearch')}
-            className="absolute end-1.5 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded text-slate-500 transition-colors hover:text-slate-200"
-          >
-            <CloseIcon sx={{ fontSize: 16 }} aria-hidden="true" />
-          </button>
-        )}
       </div>
     </div>
   );

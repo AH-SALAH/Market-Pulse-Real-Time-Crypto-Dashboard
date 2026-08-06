@@ -112,7 +112,7 @@ export function CoinDetailView({ coinId }: CoinDetailViewProps) {
 
       <div className="mt-3 rounded-xl border border-slate-800 bg-slate-900/60 p-4">
         {isLoading ? (
-          <div className="h-[320px] w-full animate-pulse rounded bg-slate-800/50" role="status" aria-label={t('chartLoading')} />
+          <div className="mx-auto h-[320px] w-full max-w-3xl animate-pulse rounded bg-slate-800/50" role="status" aria-label={t('chartLoading')} />
         ) : isError ? (
           <div
             className="flex flex-col items-center gap-4 rounded-xl border border-red-500/20 bg-red-500/5 p-8 text-center"

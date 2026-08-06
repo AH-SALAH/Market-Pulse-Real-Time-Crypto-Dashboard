@@ -46,7 +46,7 @@ export function WatchlistButton({ coinId, coinName, className, label }: Watchlis
       title={watched ? t('inWatchlist') : t('addTitle')}
       disabled={pending || isLoading}
       className={cn(
-        'inline-flex shrink-0 items-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500',
+        'inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500',
         watched
           ? 'bg-blue-500/15 text-blue-400 hover:bg-blue-500/25'
           : 'text-slate-500 hover:bg-slate-800 hover:text-slate-300',

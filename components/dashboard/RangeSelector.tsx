@@ -45,7 +45,7 @@ export function RangeSelector({ coinId, value, onChange }: RangeSelectorProps) {
             onClick={() => handleSelect(option.days)}
             aria-pressed={active}
             className={cn(
-              'rounded-md px-3 py-1 text-xs font-medium transition-colors',
+              'cursor-pointer rounded-md px-3 py-1 text-xs font-medium transition-colors',
               active
                 ? 'bg-blue-500 text-slate-950'
                 : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200',

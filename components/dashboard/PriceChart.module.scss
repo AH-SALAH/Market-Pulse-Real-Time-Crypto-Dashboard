@@ -4,6 +4,8 @@
 
 .container {
   width: 100%;
+  max-width: 48rem;
+  margin-inline: auto;
 }
 
 .chart {
@@ -11,6 +13,9 @@
   width: 100%;
   height: auto;
   color: $color-text-secondary;
+  // Axis labels are Latin/numbers; the <html> dir=rtl would otherwise flip SVG
+  // text-anchor semantics (y labels drifting into the plot) and bidi-reorder "$62.5k".
+  direction: ltr;
 }
 
 .lineUp {

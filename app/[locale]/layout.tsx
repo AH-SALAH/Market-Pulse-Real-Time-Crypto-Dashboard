@@ -41,6 +41,11 @@ export async function generateMetadata({ params }: LocaleLayoutProps): Promise<M
   return {
     title: t('title'),
     description: t('description'),
+    icons: {
+      icon: ['/favicon.svg', '/favicon.ico'],
+      shortcut: '/favicon.svg',
+      apple: '/apple-touch-icon.png',
+    },
   };
 }
 
@@ -66,7 +71,10 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
       dir={isRtl ? 'rtl' : 'ltr'}
       className={`${geistSans.variable} ${geistMono.variable} ${notoSansArabic.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-slate-950 text-slate-50">
+      <body
+        className="min-h-full flex flex-col bg-slate-950 text-slate-50"
+        suppressHydrationWarning
+      >
         <GTMScript />
         <NextIntlClientProvider>
           <StoreProvider>

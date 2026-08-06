@@ -3,6 +3,7 @@
 import { useLocale, useTranslations } from 'next-intl';
 import { Link, usePathname, useRouter } from '@/i18n/navigation';
 import { cn } from '@/lib/cn';
+import { LogoMark } from './LogoMark';
 
 const NAV_ITEMS = [
   { key: 'markets', href: '/' },
@@ -39,7 +40,7 @@ function LanguageSwitcher() {
             aria-pressed={active}
             onClick={() => switchTo(code)}
             className={cn(
-              'rounded-md px-2.5 py-1 text-xs font-medium transition-colors',
+              'cursor-pointer rounded-md px-2.5 py-1 text-xs font-medium transition-colors',
               active
                 ? 'bg-blue-500 text-slate-950'
                 : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200',
@@ -61,12 +62,7 @@ export function Header() {
     <header className="sticky top-0 z-10 border-b border-slate-800 bg-slate-950/80 backdrop-blur">
       <div className="mx-auto flex h-14 max-w-7xl items-center gap-6 px-4">
         <Link href="/" className="flex items-center gap-2 text-base font-bold tracking-tight text-slate-100">
-          <span
-            className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-blue-500 text-xs font-black text-slate-950"
-            aria-hidden="true"
-          >
-            MP
-          </span>
+          <LogoMark className="h-7 w-7 shrink-0" />
           {t('brand')}
         </Link>
 
