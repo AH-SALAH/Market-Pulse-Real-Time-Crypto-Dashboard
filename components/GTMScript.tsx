@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { CONSENT_STORAGE_KEY, DEFAULT_CONSENT } from '@/lib/analytics/consent';
 
 const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
+const ga4Id = process.env.NEXT_PUBLIC_GA4_ID;
 
 const DEFAULT_CONSENT_JSON = JSON.stringify(DEFAULT_CONSENT);
 
@@ -36,19 +37,43 @@ let injected = false;
 
 export function GTMScript() {
   useEffect(() => {
-    if (!gtmId || injected) return;
+    if (injected || (!gtmId && !ga4Id)) return;
     injected = true;
 
+    // 1. Consent defaults must precede every tag loader.
     const consent = document.createElement('script');
     consent.id = 'gtm-consent-defaults';
     consent.textContent = consentDefaultsScript;
     document.head.appendChild(consent);
 
-    const loader = document.createElement('script');
-    loader.id = 'gtm-loader';
-    loader.src = `https://www.googletagmanager.com/gtm.js?id=${gtmId}`;
-    loader.async = true;
-    document.head.appendChild(loader);
+    // 2. GTM container (gtm.js), when configured.
+    if (gtmId) {
+      const loader = document.createElement('script');
+      loader.id = 'gtm-loader';
+      loader.src = `https://www.googletagmanager.com/gtm.js?id=${gtmId}`;
+      loader.async = true;
+      document.head.appendChild(loader);
+    }
+
+    // 3. Google tag (gtag.js) for the GA4 property, when configured. Mirrors
+    // the standard snippet but keeps consent defaults ahead of the config so
+    // the initial page_view carries the correct consent state. The config is
+    // queued in the dataLayer and processed once gtag.js loads. gtm.js
+    // consolidates the page's Google Tag (GT-NNMLKDT6) into its model, so
+    // exactly one page_view fires despite the container also being present.
+    if (ga4Id) {
+      const ga4Loader = document.createElement('script');
+      ga4Loader.id = 'ga4-loader';
+      ga4Loader.src = `https://www.googletagmanager.com/gtag/js?id=${ga4Id}`;
+      ga4Loader.async = true;
+      document.head.appendChild(ga4Loader);
+
+      const ga4Init = document.createElement('script');
+      ga4Init.id = 'ga4-init';
+      ga4Init.textContent = `gtag('js', new Date());
+gtag('config', '${ga4Id}');`.trim();
+      document.head.appendChild(ga4Init);
+    }
   }, []);
 
   return null;
