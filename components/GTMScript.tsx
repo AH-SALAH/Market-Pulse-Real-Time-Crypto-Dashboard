@@ -7,15 +7,24 @@ const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
 
 const DEFAULT_CONSENT_JSON = JSON.stringify(DEFAULT_CONSENT);
 
+// The stored choice is folded into the consent *default* rather than sent as a
+// later 'update': gtm.js treats an 'update' received before it loads as implicit
+// (denied), which is exactly the mismatch the Google Tag Assistant reported.
 const consentDefaultsScript = `
 window.dataLayer = window.dataLayer || [];
 function gtag() { window.dataLayer.push(arguments); }
 window.gtag = gtag;
-gtag('consent', 'default', ${DEFAULT_CONSENT_JSON});
+var consentDefaults = ${DEFAULT_CONSENT_JSON};
 try {
   var stored = JSON.parse(localStorage.getItem('${CONSENT_STORAGE_KEY}'));
-  if (stored) { gtag('consent', 'update', stored); }
+  var hasAllModes = stored && typeof stored === 'object' &&
+    (stored.ad_storage === 'granted' || stored.ad_storage === 'denied') &&
+    (stored.analytics_storage === 'granted' || stored.analytics_storage === 'denied') &&
+    (stored.ad_user_data === 'granted' || stored.ad_user_data === 'denied') &&
+    (stored.ad_personalization === 'granted' || stored.ad_personalization === 'denied');
+  if (hasAllModes) { consentDefaults = stored; }
 } catch (e) {}
+gtag('consent', 'default', consentDefaults);
 window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
 `.trim();
 
