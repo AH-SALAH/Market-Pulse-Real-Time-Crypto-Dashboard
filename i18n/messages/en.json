@@ -80,7 +80,10 @@
     "emptyTitle": "Your watchlist is empty",
     "emptyHint": "Save coins you want to track and they'll show up here with live prices.",
     "browseMarkets": "Browse markets",
-    "listAria": "Watchlisted coins"
+    "listAria": "Watchlisted coins",
+    "unavailableTitle": "Market data unavailable",
+    "unavailableHint": "Your saved coins couldn't be loaded right now. They'll appear here with live prices when data is available.",
+    "rowUnavailable": "Live data temporarily unavailable"
   },
   "WatchlistButton": {
     "addAria": "Add {coin} to watchlist",

@@ -7,6 +7,7 @@ import {
   removeFromWatchlist as apiRemove,
   type WatchlistItem,
 } from '@/lib/watchlist';
+import { loadWatchlist, saveWatchlist } from '@/lib/watchlistStorage';
 import { watchlist_added, watchlist_removed } from '@/lib/analytics/events';
 
 export const watchlistQueryKey = ['watchlist'] as const;
@@ -16,10 +17,32 @@ export interface WatchlistMutationVariables {
   coinName: string;
 }
 
+// Server is the source of truth when it has items. The localStorage copy only
+// kicks in when the server comes back empty (e.g. dev-server restart wiped the
+// in-memory store) — then the list is re-pushed to the server so it heals.
+async function fetchWatchlistWithCache(): Promise<WatchlistItem[]> {
+  const server = await getWatchlist();
+  if (server.length === 0) {
+    const cached = loadWatchlist();
+    if (cached && cached.length > 0) {
+      try {
+        for (const item of cached) {
+          await apiAdd(item.coinId);
+        }
+      } catch (error) {
+        console.warn('Watchlist server heal failed — using local cache:', error);
+      }
+      return cached;
+    }
+  }
+  saveWatchlist(server);
+  return server;
+}
+
 export function useWatchlist() {
   return useQuery<WatchlistItem[]>({
     queryKey: watchlistQueryKey,
-    queryFn: getWatchlist,
+    queryFn: fetchWatchlistWithCache,
     refetchInterval: 60000, // Poll every 60 seconds for real-time feel
     staleTime: 30000,
   });

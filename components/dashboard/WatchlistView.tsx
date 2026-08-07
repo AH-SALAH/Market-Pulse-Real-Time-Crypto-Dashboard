@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { useCoins } from '@/hooks/useCoins';
 import { useWatchlist } from '@/hooks/useWatchlist';
+import type { Coin } from '@/lib/coingecko';
 import { coin_selected } from '@/lib/analytics/events';
 import { formatPrice } from '@/lib/format';
 import { cn } from '@/lib/cn';
@@ -27,6 +28,12 @@ function SkeletonRow() {
   );
 }
 
+interface WatchlistRow {
+  coinId: string;
+  addedAt: string;
+  coin: Coin | undefined;
+}
+
 export function WatchlistView() {
   const t = useTranslations('Watchlist');
   const watchlistQuery = useWatchlist();
@@ -36,12 +43,19 @@ export function WatchlistView() {
   const coins = coinsQuery.data ?? [];
 
   // Resolve watchlisted ids against the live market list (React Query cache,
-  // no extra request). A coin saved earlier may have fallen out of the top
-  // list — those rows are skipped rather than shown with stale data.
+  // no extra request). Coins missing from the market list (e.g. the CoinGecko
+  // proxy fell back to its small fallback set, or the coin fell out of the top
+  // list) are still rendered so saved items never vanish from the page.
   const coinsById = new Map(coins.map((coin) => [coin.id, coin]));
-  const rows = items
-    .map((item) => ({ coin: coinsById.get(item.coinId), addedAt: item.addedAt }))
-    .filter((row): row is { coin: (typeof coins)[number]; addedAt: string } => Boolean(row.coin));
+  const rows: WatchlistRow[] = items.map((item) => ({
+    coinId: item.coinId,
+    addedAt: item.addedAt,
+    coin: coinsById.get(item.coinId),
+  }));
+
+  const hasSavedItems = items.length > 0;
+  const resolvedCount = rows.filter((row) => row.coin).length;
+  const hasUnresolved = resolvedCount < rows.length;
 
   const isLoading = watchlistQuery.isLoading || coinsQuery.isLoading;
 
@@ -70,7 +84,7 @@ export function WatchlistView() {
             <SkeletonRow key={i} />
           ))}
         </ul>
-      ) : watchlistQuery.isError ? (
+      ) : watchlistQuery.isError && !hasSavedItems ? (
         <div
           className="flex flex-col items-center gap-4 rounded-xl border border-red-500/20 bg-red-500/5 p-8 text-center"
           role="alert"
@@ -86,7 +100,7 @@ export function WatchlistView() {
             {t('retry')}
           </button>
         </div>
-      ) : rows.length === 0 ? (
+      ) : !hasSavedItems ? (
         <div className="flex flex-col items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/60 p-10 text-center">
           <p className="text-sm font-medium text-slate-200">{t('emptyTitle')}</p>
           <p className="max-w-sm text-sm text-slate-400">{t('emptyHint')}</p>
@@ -97,48 +111,85 @@ export function WatchlistView() {
             {t('browseMarkets')}
           </Link>
         </div>
+      ) : rows.length === 0 ? (
+        <div className="flex flex-col items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/60 p-10 text-center">
+          <p className="text-sm font-medium text-slate-200">{t('unavailableTitle')}</p>
+          <p className="max-w-sm text-sm text-slate-400">{t('unavailableHint')}</p>
+        </div>
       ) : (
-        <ul className="space-y-2" aria-label={t('listAria')}>
-          {rows.map(({ coin }) => (
-            <li key={coin.id}>
-              <Link
-                href={`/coin/${coin.id}`}
-                onClick={() =>
-                  coin_selected({ coin_id: coin.id, coin_name: coin.name, coin_symbol: coin.symbol })
-                }
-                className="group flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/60 px-4 py-3 transition-colors hover:border-slate-600 hover:bg-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
-              >
-                <Image
-                  src={coin.image}
-                  alt=""
-                  width={32}
-                  height={32}
-                  className="h-8 w-8 shrink-0 rounded-full"
-                />
-                <div className="min-w-0">
-                  <h2 className="truncate text-sm font-semibold text-slate-100">{coin.name}</h2>
-                  <p className="font-mono text-xs uppercase tracking-wide text-slate-400">
-                    {coin.symbol}
-                  </p>
-                </div>
+        <>
+          {hasUnresolved && (
+            <p className="rounded-lg border border-amber-500/20 bg-amber-500/5 px-3 py-2 text-xs text-amber-300">
+              {t('unavailableHint')}
+            </p>
+          )}
+          <ul className="space-y-2" aria-label={t('listAria')}>
+            {rows.map(({ coinId, coin }) =>
+              coin ? (
+                <li key={coinId}>
+                  <Link
+                    href={`/coin/${coin.id}`}
+                    onClick={() =>
+                      coin_selected({
+                        coin_id: coin.id,
+                        coin_name: coin.name,
+                        coin_symbol: coin.symbol,
+                      })
+                    }
+                    className="group flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/60 px-4 py-3 transition-colors hover:border-slate-600 hover:bg-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
+                  >
+                    <Image
+                      src={coin.image}
+                      alt=""
+                      width={32}
+                      height={32}
+                      className="h-8 w-8 shrink-0 rounded-full"
+                    />
+                    <div className="min-w-0">
+                      <h2 className="truncate text-sm font-semibold text-slate-100">
+                        {coin.name}
+                      </h2>
+                      <p className="font-mono text-xs uppercase tracking-wide text-slate-400">
+                        {coin.symbol}
+                      </p>
+                    </div>
 
-                <Sparkline
-                  data={coin.sparkline_in_7d?.price ?? []}
-                  className="ms-auto hidden h-[30px] w-24 shrink-0 sm:block"
-                />
+                    <Sparkline
+                      data={coin.sparkline_in_7d?.price ?? []}
+                      className="ms-auto hidden h-[30px] w-24 shrink-0 sm:block"
+                    />
 
-                <div className="ms-4 flex shrink-0 flex-col items-end gap-1 sm:ms-0">
-                  <span className="font-mono text-sm font-semibold tabular-nums text-slate-100">
-                    {formatPrice(coin.current_price)}
-                  </span>
-                  <PriceChangeBadge value={coin.price_change_percentage_24h ?? 0} />
-                </div>
+                    <div className="ms-4 flex shrink-0 flex-col items-end gap-1 sm:ms-0">
+                      <span className="font-mono text-sm font-semibold tabular-nums text-slate-100">
+                        {formatPrice(coin.current_price)}
+                      </span>
+                      <PriceChangeBadge value={coin.price_change_percentage_24h ?? 0} />
+                    </div>
 
-                <WatchlistButton coinId={coin.id} coinName={coin.name} />
-              </Link>
-            </li>
-          ))}
-        </ul>
+                    <WatchlistButton coinId={coin.id} coinName={coin.name} />
+                  </Link>
+                </li>
+              ) : (
+                <li key={coinId}>
+                  <Link
+                    href={`/coin/${coinId}`}
+                    className="group flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/60 px-4 py-3 transition-colors hover:border-slate-600 hover:bg-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
+                  >
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-800 text-xs font-bold uppercase text-slate-300">
+                      {coinId.slice(0, 2)}
+                    </div>
+                    <div className="min-w-0">
+                      <h2 className="truncate text-sm font-semibold text-slate-100">{coinId}</h2>
+                      <p className="text-xs text-slate-400">{t('rowUnavailable')}</p>
+                    </div>
+                    <span className="ms-auto font-mono text-sm tabular-nums text-slate-400">—</span>
+                    <WatchlistButton coinId={coinId} coinName={coinId} className="ms-4" />
+                  </Link>
+                </li>
+              ),
+            )}
+          </ul>
+        </>
       )}
     </div>
   );
