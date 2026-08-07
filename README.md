@@ -2,6 +2,12 @@
 
 Real-time cryptocurrency market dashboard built with Next.js 16, React Query, Redux Toolkit, MUI, MongoDB Atlas, and GA4/GTM analytics.
 
+## Screenshots
+
+| Markets dashboard | Coin detail with price chart & alerts | Watchlist | Arabic RTL |
+|---|---|---|---|
+| ![Markets dashboard](public/screenshots/dashboard.png) | ![Coin detail](public/screenshots/coin-detail.png) | ![Watchlist](public/screenshots/watchlist.png) | ![Arabic RTL](public/screenshots/dashboard-ar.png) |
+
 ## JD Skills Mapping
 
 | JD Requirement | Implementation | Key Files |
