@@ -1,4 +1,6 @@
-import Script from 'next/script';
+'use client';
+
+import { useEffect } from 'react';
 import { CONSENT_STORAGE_KEY, DEFAULT_CONSENT } from '@/lib/analytics/consent';
 
 const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
@@ -17,17 +19,28 @@ try {
 window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
 `.trim();
 
-export function GTMScript() {
-  if (!gtmId) return null;
+// The consent defaults must run before GTM. React never executes inline
+// <script> elements rendered on the client (locale navigation re-renders this
+// layout and would warn + skip execution), so inject both scripts via the DOM
+// API in order. Module-scoped flag dedupes across layout remounts.
+let injected = false;
 
-  return (
-    <>
-      <script dangerouslySetInnerHTML={{ __html: consentDefaultsScript }} />
-      <Script
-        id="gtm-loader"
-        src={`https://www.googletagmanager.com/gtm.js?id=${gtmId}`}
-        strategy="afterInteractive"
-      />
-    </>
-  );
+export function GTMScript() {
+  useEffect(() => {
+    if (!gtmId || injected) return;
+    injected = true;
+
+    const consent = document.createElement('script');
+    consent.id = 'gtm-consent-defaults';
+    consent.textContent = consentDefaultsScript;
+    document.head.appendChild(consent);
+
+    const loader = document.createElement('script');
+    loader.id = 'gtm-loader';
+    loader.src = `https://www.googletagmanager.com/gtm.js?id=${gtmId}`;
+    loader.async = true;
+    document.head.appendChild(loader);
+  }, []);
+
+  return null;
 }
