@@ -82,4 +82,4 @@ DB_CONNECTION_STRING=
 
 ## Deployment
 
-Vercel-ready. Connect the repo in the Vercel dashboard (or `npx vercel`), add the env vars below, and deploy. Live URL is added here once deployed.
+Vercel-ready. Connect the repo in the Vercel dashboard (or `npx vercel`), add the env vars, and deploy.
