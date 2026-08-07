@@ -6,6 +6,7 @@ import Popover from '@mui/material/Popover';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import { cn } from '@/lib/cn';
 import { useAlerts, useCreateAlert, useDeleteAlert } from '@/hooks/useAlerts';
+import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 
 interface PriceAlertButtonProps {
   coinId: string;
@@ -130,7 +131,7 @@ export function PriceAlertButton({
             <button
               type="submit"
               disabled={pending}
-              className="w-full rounded-md bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-blue-500 disabled:cursor-wait disabled:opacity-60"
+              className="w-full rounded-md bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-blue-500 cursor-pointer disabled:cursor-wait disabled:opacity-60"
             >
               {createMutation.isPending ? t('saving') : t('create')}
             </button>
@@ -155,9 +156,9 @@ export function PriceAlertButton({
                     aria-label={t('deleteAria', {
                       price: alert.targetPrice.toLocaleString('en-US', { maximumFractionDigits: 2 }),
                     })}
-                    className="text-xs text-slate-500 transition-colors hover:text-red-400 disabled:opacity-60"
+                    className="text-xs text-slate-500 transition-colors hover:text-red-400 disabled:opacity-60 cursor-pointer"
                   >
-                    {t('delete')}
+                    <DeleteIcon sx={{ fontSize: 16 }} aria-hidden="true" titleAccess={t('delete')} />
                   </button>
                 </li>
               ))}
