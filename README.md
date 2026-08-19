@@ -25,7 +25,7 @@ Real-time cryptocurrency market dashboard built with Next.js 16, React Query, Re
 
 - **Server data** (coin prices, charts, watchlist, alerts) → React Query only
 - **Client/UI state** (search, sort) → Redux Toolkit only
-- **No duplication** between the two — deliberate separation for interview talking point
+- **No duplication** between the two — deliberate separation
 
 ```
 app/[locale]/          # Locale-prefixed routes (/en, /ar) via next-intl
